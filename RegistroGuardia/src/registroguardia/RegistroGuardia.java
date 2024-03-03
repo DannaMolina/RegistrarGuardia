@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RegistroGuardia {
+    @SuppressWarnings({"CallToPrintStackTrace", "ConvertToTryWithResources"})
     public static void main(String[] args) {
         
         String usuario = "root";
@@ -28,24 +29,25 @@ public class RegistroGuardia {
         String direccion;
         String estadoGuardia;
         
-        nombre = JOptionPane.showInputDialog("Ingrese el Nombre del Guardia");
-        apellido = JOptionPane.showInputDialog("Ingrese el Apellido del Guardia");
-        fechaNacimiento = JOptionPane.showInputDialog("Ingrese la Fecha de Nacimiento del Guardia");
-        telefono = JOptionPane.showInputDialog("Ingrese el Numero Telefonico del Guardia");
+        JOptionPane.showMessageDialog(null, "A continuacion se le pediran los datos del guardia para poder registrarlo");
+        
+        nombre = JOptionPane.showInputDialog("Ingrese el Nombre");
+        apellido = JOptionPane.showInputDialog("Ingrese el Apellido");
+        fechaNacimiento = JOptionPane.showInputDialog("Ingrese la Fecha de Nacimiento ejemplo:(2003-12-31)");
+        telefono = JOptionPane.showInputDialog("Ingrese el Numero Telefonico");
         tipoDocumento = JOptionPane.showInputDialog("Ingrese que Tipo de documento si es CC,CE,PPT");
-        numeroDocumento = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el Numero de Documento del Guardia"));
-        email = JOptionPane.showInputDialog("Ingrese el Email del Guardia:");
-        direccion = JOptionPane.showInputDialog("Ingrese la direccion del Guardia");
+        numeroDocumento = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el Numero de Documento"));
+        email = JOptionPane.showInputDialog("Ingrese el Email");
+        direccion = JOptionPane.showInputDialog("Ingrese la direccion");
         estadoGuardia = JOptionPane.showInputDialog("Ingrese el estado de guardia si se encuentra Activo, Inactivo o Suspedido");
 
         try {
-            Connection conexion = DriverManager.getConnection(url,usuario,password);
-
-            String sqlPersona = "INSERT INTO personas ( personas_nombre, personas_apellido, personas_fecha_nacimiento,"
-                    + "         personas_telefono, personas_tipo_documento, personas_numero_documento, personas_email, personas_direccion)"
-                    + "         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statementPersona = conexion.prepareStatement(sqlPersona, PreparedStatement.RETURN_GENERATED_KEYS);
-            
+            try (Connection conexion = DriverManager.getConnection(url,usuario,password)) {
+                String sqlPersona = "INSERT INTO personas ( personas_nombre, personas_apellido, personas_fecha_nacimiento,"
+                        + "         personas_telefono, personas_tipo_documento, personas_numero_documento, personas_email, personas_direccion)"
+                        + "         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement statementPersona = conexion.prepareStatement(sqlPersona, PreparedStatement.RETURN_GENERATED_KEYS);
+                
                 statementPersona.setString(1, nombre);
                 statementPersona.setString(2, apellido);
                 statementPersona.setString(3, fechaNacimiento);
@@ -54,36 +56,38 @@ public class RegistroGuardia {
                 statementPersona.setInt(6, numeroDocumento);
                 statementPersona.setString(7, email);
                 statementPersona.setString(8, direccion);
-            
-            int filasInsertadasPersona = statementPersona.executeUpdate();
-            int idPersona = -1;
-            if (filasInsertadasPersona > 0) {
-                ResultSet generatedKeys = statementPersona.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    idPersona = generatedKeys.getInt(1);
+                
+                int filasInsertadasPersona = statementPersona.executeUpdate();
+                int idPersona = -1;
+                if (filasInsertadasPersona > 0) {
+                    ResultSet generatedKeys = statementPersona.getGeneratedKeys();
+                    if (generatedKeys.next()) {
+                        idPersona = generatedKeys.getInt(1);
+                    }
                 }
-            }
-
-            if (idPersona != -1) {
-                String sqlGuardia = "INSERT INTO guardias (guardias_estado, personas_personas_id) VALUES (?, ?)";
-                PreparedStatement statementGuardia = conexion.prepareStatement(sqlGuardia);
-                statementGuardia.setString(1, estadoGuardia);
-                statementGuardia.setInt(2, idPersona);
-
-                int filasInsertadasGuardia = statementGuardia.executeUpdate();
-                if (filasInsertadasGuardia > 0) {
-                    JOptionPane.showMessageDialog(null, "El Guardia fue Registrado Correctamente");
+                
+                if (idPersona != -1) {
+                    String sqlGuardia = "INSERT INTO guardias (guardias_estado, personas_personas_id) VALUES (?, ?)";
+                    PreparedStatement statementGuardia = conexion.prepareStatement(sqlGuardia);
+                    statementGuardia.setString(1, estadoGuardia);
+                    statementGuardia.setInt(2, idPersona);
+                    
+                    int filasInsertadasGuardia = statementGuardia.executeUpdate();
+                    if (filasInsertadasGuardia > 0) {
+                        JOptionPane.showMessageDialog(null, "El Guardia fue Registrado Correctamente");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error al Guardar los datos del guardia");
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Error al guardar datos del guardia");
+                    JOptionPane.showMessageDialog(null, "Error al Guardar los datos de la persona");
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar datos de la persona");
+                
+                statementPersona.close();
             }
-
-            statementPersona.close();
-            conexion.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+ 
 }
