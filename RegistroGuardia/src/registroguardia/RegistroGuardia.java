@@ -92,7 +92,7 @@ public class RegistroGuardia {
                     break;
                 case 1:
                     //Consultar Guardia
-                    consultarGuardia(conexion);
+                    ConsultarGuardia(conexion);
                     break;
                     
                 case 2:
@@ -100,12 +100,12 @@ public class RegistroGuardia {
                     int idPersonaActualizar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID de la Persona a actualizar"));
                     String nuevoNombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre:");
                     String nuevoApellido = JOptionPane.showInputDialog("Ingrese el nuevo apellido:");
-                    actualizarPersona(conexion, idPersonaActualizar, nuevoNombre, nuevoApellido);
+                    ActualizarGuardia(conexion, idPersonaActualizar, nuevoNombre, nuevoApellido);
                     break;
                 case 3:
                     //Eliminar
                     int idPersonaEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID de la Persona a eliminar"));
-                    eliminarPersona(conexion, idPersonaEliminar);
+                    EliminarGuardia(conexion, idPersonaEliminar);
                     break;
                 default:
                     JOptionPane.showMessageDialog(null, "Opción no válida");
@@ -120,7 +120,7 @@ public class RegistroGuardia {
     
 
     // Método para consultar todos los guardias en la base de datos
-   public static void consultarGuardia(Connection conexion) throws SQLException {
+   public static void ConsultarGuardia(Connection conexion) throws SQLException {
         String sqlConsulta = "SELECT p.personas_nombre, p.personas_apellido, p.personas_fecha_nacimiento, p.personas_telefono, p.personas_tipo_documento, p.personas_numero_documento, p.personas_email, p.personas_direccion, g.guardias_estado " +
                              "FROM personas p " +
                              "JOIN guardias g ON p.personas_id = g.personas_personas_id";
@@ -140,7 +140,7 @@ public class RegistroGuardia {
         }
    }
     // Método para actualizar
-    public static void actualizarPersona(Connection connection, int idPersona, String nombre, String apellido) throws SQLException {
+    public static void ActualizarGuardia(Connection connection, int idPersona, String nombre, String apellido) throws SQLException {
         String sqlUpdate = "UPDATE personas SET personas_nombre = ?, personas_apellido = ? WHERE personas_id = ?";
         PreparedStatement statementUpdate = connection.prepareStatement(sqlUpdate);
         statementUpdate.setString(1, nombre);
@@ -150,7 +150,7 @@ public class RegistroGuardia {
     }
 
     // Método para eliminar
-   public static void eliminarPersona(Connection conexion, int idPersona) throws SQLException {
+   public static void EliminarGuardia(Connection conexion, int idPersona) throws SQLException {
     try {
         // Eliminar las filas en la tabla guardia que están asociadas a la persona
         String sqlDeleteGuardia = "DELETE FROM guardias WHERE personas_personas_id = ?";
