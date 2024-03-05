@@ -17,15 +17,15 @@ public class RegistroGuardia {
         String password = "123456789";
         String url = "jdbc:mysql://localhost:3308/condominio";
 
-        String nombre;
-        String apellido;
-        String fechaNacimiento;
-        String telefono;
-        String tipoDocumento;
-        int numeroDocumento;
-        String email;
-        String direccion;
-        String estadoGuardia;
+        String Nombre;
+        String Apellido;
+        String FechaNacimiento;
+        String Telefono;
+        String TipoDocumento;
+        int NumeroDocumento;
+        String Email;
+        String Direccion;
+        String EstadoGuardia;
 
         String[] opciones = {"Registrar Guardia", "Consultar Guardia", "Actualizar Guardia", "Eliminar Guardia"};
 
@@ -39,30 +39,30 @@ public class RegistroGuardia {
                     // Registrar Guardia
                     JOptionPane.showMessageDialog(null, "A continuacion se le pediran los datos del guardia para poder registrarlo");
 
-                    nombre = JOptionPane.showInputDialog("Ingrese el Nombre");
-                    apellido = JOptionPane.showInputDialog("Ingrese el Apellido");
-                    fechaNacimiento = JOptionPane.showInputDialog("Ingrese la Fecha de Nacimiento ejemplo:(2003-12-31)");
-                    telefono = JOptionPane.showInputDialog("Ingrese el Numero Telefonico");
-                    tipoDocumento = JOptionPane.showInputDialog("Ingrese que Tipo de documento si es CC,CE,PPT");
-                    numeroDocumento = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el Numero de Documento"));
-                    email = JOptionPane.showInputDialog("Ingrese el Email");
-                    direccion = JOptionPane.showInputDialog("Ingrese la direccion");
+                    Nombre = JOptionPane.showInputDialog("Ingrese el Nombre");
+                    Apellido = JOptionPane.showInputDialog("Ingrese el Apellido");
+                    FechaNacimiento = JOptionPane.showInputDialog("Ingrese la Fecha de Nacimiento ejemplo:(2003-12-31)");
+                    Telefono = JOptionPane.showInputDialog("Ingrese el Numero Telefonico");
+                    TipoDocumento = JOptionPane.showInputDialog("Ingrese que Tipo de documento si es CC,CE,PPT");
+                    NumeroDocumento = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el Numero de Documento"));
+                    Email = JOptionPane.showInputDialog("Ingrese el Email");
+                    Direccion = JOptionPane.showInputDialog("Ingrese la direccion");
                     
-                    estadoGuardia = JOptionPane.showInputDialog("Ingrese el estado de guardia si se encuentra Activo, Inactivo o Suspendido");
+                    EstadoGuardia = JOptionPane.showInputDialog("Ingrese el estado de guardia si se encuentra Activo, Inactivo o Suspendido");
 
                     String sqlPersona = "INSERT INTO personas ( personas_nombre, personas_apellido, personas_fecha_nacimiento,"
                         + "         personas_telefono, personas_tipo_documento, personas_numero_documento, personas_email, personas_direccion)"
                         + "         VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement statementPersona = conexion.prepareStatement(sqlPersona, PreparedStatement.RETURN_GENERATED_KEYS);
                 
-                statementPersona.setString(1, nombre);
-                statementPersona.setString(2, apellido);
-                statementPersona.setString(3, fechaNacimiento);
-                statementPersona.setString(4, telefono);
-                statementPersona.setString(5, tipoDocumento);
-                statementPersona.setInt(6, numeroDocumento);
-                statementPersona.setString(7, email);
-                statementPersona.setString(8, direccion);
+                statementPersona.setString(1, Nombre);
+                statementPersona.setString(2, Apellido);
+                statementPersona.setString(3, FechaNacimiento);
+                statementPersona.setString(4, Telefono);
+                statementPersona.setString(5, TipoDocumento);
+                statementPersona.setInt(6, NumeroDocumento);
+                statementPersona.setString(7, Email);
+                statementPersona.setString(8, Direccion);
                 
                 int filasInsertadasPersona = statementPersona.executeUpdate();
                 int idPersona = -1;
@@ -76,7 +76,7 @@ public class RegistroGuardia {
                 if (idPersona != -1) {
                     String sqlGuardia = "INSERT INTO guardias (guardias_estado, personas_personas_id) VALUES (?, ?)";
                     PreparedStatement statementGuardia = conexion.prepareStatement(sqlGuardia);
-                    statementGuardia.setString(1, estadoGuardia);
+                    statementGuardia.setString(1, EstadoGuardia);
                     statementGuardia.setInt(2, idPersona);
                     
                     int filasInsertadasGuardia = statementGuardia.executeUpdate();
@@ -140,11 +140,11 @@ public class RegistroGuardia {
         }
    }
     // Método para actualizar
-    public static void ActualizarGuardia(Connection connection, int idPersona, String nombre, String apellido) throws SQLException {
-        String sqlUpdate = "UPDATE personas SET personas_nombre = ?, personas_apellido = ? WHERE personas_id = ?";
+    public static void ActualizarGuardia(Connection connection, int idPersona, String Nombre, String Apellido) throws SQLException {
+        String sqlUpdate = "UPDATE personas SET personas_Nombre = ?, personas_apellido = ? WHERE personas_id = ?";
         PreparedStatement statementUpdate = connection.prepareStatement(sqlUpdate);
-        statementUpdate.setString(1, nombre);
-        statementUpdate.setString(2, apellido);
+        statementUpdate.setString(1, Nombre);
+        statementUpdate.setString(2, Apellido);
         statementUpdate.setInt(3, idPersona);
         statementUpdate.executeUpdate();
     }
